@@ -22,7 +22,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 const QuantitySelect = styled(Select)({
   minWidth: '150px',
   height: '30px',
-  borderRadius: '10px',
+  borderRadius: '11px',
   border: '1px solid #555',
   padding: '8px',
   color: '#333',

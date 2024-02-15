@@ -22,6 +22,7 @@ import { useCart } from './CartContext';
 const NavBar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(''); // State for search query
   const [anchorEl, setAnchorEl] = useState(null);
   const { cartItems } = useCart();
   const navigate = useNavigate(); // Use useNavigate for navigation
@@ -60,6 +61,18 @@ const NavBar = () => {
     setAnchorEl(null);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== '') {
+      // Redirect to search results page with search query as parameter
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <AppBar style={{ backgroundColor: '#333', zIndex: 1000, position: 'fixed' }}>
       <Toolbar>
@@ -80,10 +93,12 @@ const NavBar = () => {
           WatchHub
         </Typography>
 
-        <Paper component="form" sx={{ p: '2', display: 'flex', width: '60%', alignItems: 'center' }}>
+        <Paper component="form" onSubmit={handleSearchSubmit} sx={{ p: '2', display: 'flex', width: '60%', alignItems: 'center' }}>
           <InputBase
             placeholder="Search"
             inputProps={{ 'aria-label': 'search products' }}
+            value={searchQuery}
+            onChange={handleSearchChange}
             sx={{ ml: 1, flex: 1, color: '#000' }}
           />
           <IconButton type="submit" aria-label="search" sx={{ color: '#000' }}>
