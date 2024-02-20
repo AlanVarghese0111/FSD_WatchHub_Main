@@ -1,14 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Grid, Avatar, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import GroupIcon from '@mui/icons-material/Group';
 import StoreIcon from '@mui/icons-material/Store';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
-const AdminDashboard = ({ totalUsers, totalProducts, totalOrders }) => {
+const AdminDashboard = () => {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const usersResponse = await fetch('http://localhost:5000/api/auth/totalusers');
+        if (!usersResponse.ok) {
+          throw new Error('Failed to fetch total users');
+        }
+        const userData = await usersResponse.json();
+        setTotalUsers(userData.totalUsers);
+
+        const productsResponse = await fetch('http://localhost:5000/api/product/totalproducts');
+        if (!productsResponse.ok) {
+          throw new Error('Failed to fetch total products');
+        }
+        const productsData = await productsResponse.json();
+        setTotalProducts(productsData.totalProducts);
+
+        const ordersResponse = await fetch('http://localhost:5000/api/order/totalorders');
+        if (!ordersResponse.ok) {
+          throw new Error('Failed to fetch total orders');
+        }
+        const ordersData = await ordersResponse.json();
+        setTotalOrders(ordersData.totalOrders);
+      } catch (error) {
+        console.error('Error fetching total counts:', error);
+      }
+    };
+
+    fetchCounts();
+  }, []);
 
   return (
     <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f9f9f9' }}>
@@ -27,7 +60,9 @@ const AdminDashboard = ({ totalUsers, totalProducts, totalOrders }) => {
               </Avatar>
               <Typography variant="h6" gutterBottom>Total Users</Typography>
               <Typography variant="h3">{totalUsers}</Typography>
-              <Button variant="contained" onClick={() => navigate('/viewusers')} color="primary">View All Users</Button>
+              <Button variant="contained" onClick={() => navigate('/viewusers')} style={{ backgroundColor: '#333', color: '#fff' }}>
+                View All Users
+              </Button>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -37,7 +72,9 @@ const AdminDashboard = ({ totalUsers, totalProducts, totalOrders }) => {
               </Avatar>
               <Typography variant="h6" gutterBottom>Total Products</Typography>
               <Typography variant="h3">{totalProducts}</Typography>
-              <Button variant="contained" onClick={() => navigate('/viewproducts')} color="primary">View All Products</Button>
+              <Button variant="contained" onClick={() => navigate('/viewproducts')} style={{ backgroundColor: '#333', color: '#fff' }}>
+                View All Products
+              </Button>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -47,7 +84,9 @@ const AdminDashboard = ({ totalUsers, totalProducts, totalOrders }) => {
               </Avatar>
               <Typography variant="h6" gutterBottom>Total Orders</Typography>
               <Typography variant="h3">{totalOrders}</Typography>
-              <Button variant="contained" onClick={() => navigate('/Ordersmanagement')} color="primary">View All Orders</Button>
+              <Button variant="contained" onClick={() => navigate('/vieworders')} style={{ backgroundColor: '#333', color: '#fff' }}>
+                View All Orders
+              </Button>
             </Paper>
           </Grid>
         </Grid>

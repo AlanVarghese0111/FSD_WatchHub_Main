@@ -43,6 +43,8 @@ const NavBar = () => {
       localStorage.removeItem('user');
       setIsAuthenticated(false);
       setAnchorEl(null);
+      sessionStorage.clear();
+      localStorage.clear();
     }
   };
 
@@ -93,7 +95,7 @@ const NavBar = () => {
           WatchHub
         </Typography>
 
-        <Paper component="form" onSubmit={handleSearchSubmit} sx={{ p: '2', display: 'flex', width: '60%', alignItems: 'center' }}>
+        {/* <Paper component="form" onSubmit={handleSearchSubmit} sx={{ p: '2', display: 'flex', width: '60%', alignItems: 'center' }}>
           <InputBase
             placeholder="Search"
             inputProps={{ 'aria-label': 'search products' }}
@@ -104,11 +106,14 @@ const NavBar = () => {
           <IconButton type="submit" aria-label="search" sx={{ color: '#000' }}>
             <SearchIcon />
           </IconButton>
-        </Paper>
+        </Paper> */}
 
         <div style={{ display: 'flex' }}>
           <Button component={Link} to="/" color="inherit" style={{ margin: '0 10px' }}>
             Home
+          </Button>
+          <Button component={Link} to="/orders" color="inherit" style={{ margin: '0 10px' }}>
+            Orders
           </Button>
           <Button component={Link} to="/about" color="inherit" style={{ margin: '0 10px' }}>
             About

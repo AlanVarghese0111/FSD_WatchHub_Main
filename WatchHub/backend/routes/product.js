@@ -113,5 +113,50 @@ router.get('/viewproductsbycategory/:category', async (req, res) => {
   }
 });
 
+// Define route to get the total number of products
+router.get('/totalproducts', async (req, res) => {
+  try {
+    // Count all products in the database
+    const totalProducts = await Product.countDocuments();
+
+    // Respond with the total number of products
+    res.status(200).json({ totalProducts });
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching total number of products:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Define route to fetch all orders
+router.get('/vieworders', async (req, res) => {
+  try {
+    // Fetch all orders from the database
+    const orders = await Order.find();
+
+    // Respond with the array of orders
+    res.status(200).json(orders);
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// // Fetch product details by ID
+// router.get('/vieweachproduct/:id', async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const product = await Product.findById(productId);
+//     if (!product) {
+//       return res.status(404).json({ error: 'Product not found' });
+//     }
+//     res.json(product);
+//   } catch (error) {
+//     console.error('Error fetching product details:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 module.exports = router;

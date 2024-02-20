@@ -1,16 +1,15 @@
-// src/components/Cart.jsx
-
-import React from 'react';
-import { Typography, Button, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider } from '@mui/material';
-import { useCart } from './CartContext';
+import React, { useState, useEffect } from 'react';
+import { Typography, Button, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, IconButton, Divider } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CartItem = ({ item }) => (
   <ListItem alignItems="flex-start" style={{ padding: '20px 0', borderBottom: '1px solid #ddd' }}>
     <ListItemAvatar>
-      <Avatar alt={item.name} src={item.image} />
+      <Avatar alt={item.itemName} src={item.image} />
     </ListItemAvatar>
     <ListItemText
-      primary={item.name}
+      primary={item.itemName}
       secondary={
         <React.Fragment>
           <Typography component="span" variant="body2" color="textPrimary">
@@ -26,10 +25,30 @@ const CartItem = ({ item }) => (
 );
 
 const Cart = () => {
-  const { cartItems } = useCart();
+  const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch cart items from backend API
+    fetchCartItems();
+  }, []);
+
+  const fetchCartItems = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/cart/cartitems');
+      const data = await response.json();
+      setCartItems(data);
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+    }
+  };
 
   const getTotalPrice = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate('/Buynow');
   };
 
   return (
@@ -53,7 +72,7 @@ const Cart = () => {
           <Button
             color="primary"
             variant="contained"
-            onClick={() => alert('Checkout functionality coming soon!')}
+            onClick={handleProceedToCheckout}
             style={{ marginTop: '20px' }}
           >
             Proceed to Checkout

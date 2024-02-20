@@ -91,9 +91,15 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(data.user));
 
         // Extract user ID and store it in localStorage
-        const userId = data.user._id;
-        console.log('User ID:', userId);
-        localStorage.setItem('userId', userId);
+        // const userId = data.user._id;
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('userId', data.user._id);
+        localStorage.setItem('firstName', data.user.firstName);
+localStorage.setItem('lastName', data.user.lastName);
+localStorage.setItem('address', data.user.address);
+
+
+
 
         // Check if the user is an admin
         if (data.user.email === 'admin@gmail.com') {

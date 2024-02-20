@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useParams, useLocation } from 'react-router-dom';
 import { useCart } from './CartContext';
 import {
   Typography,
@@ -36,7 +36,6 @@ const QuantitySelect = styled(Select)({
     backgroundColor: '#555',
   },
 });
-
 
 const QuantityMenuItem = styled(MenuItem)({
   fontSize: '14px',
@@ -97,26 +96,36 @@ const Viewwatch = () => {
     }));
   };
 
-  const handleAddToCart = (product) => {
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
-    if (isAuthenticated === 'true') {
+  const handleAddToCart = async (product) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const id = user._id;
+      const firstName = user.firstName;
+      const lastName = user.lastName;
+      const address = user.address;
+
+      await axios.post('http://localhost:5000/api/cart/addcart', {
+        itemName: product.name,
+        price: product.price,
+        quantity: quantities[product._id],
+        id,
+        firstName,
+        lastName,
+        address,
+      });
       addToCart({ ...product, quantity: quantities[product._id] });
       console.log('Product added to cart:', product.name);
-    } else {
-      if (location.pathname !== '/login') {
-        window.location.href = '/login';
-      }
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
     }
   };
 
   const handleBuyNow = (productId) => {
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     if (isAuthenticated === 'true') {
-      // Continue with Buy Now functionality
       window.location.href = `/buynow/${productId}`;
       console.log('Buy now clicked for product ID:', productId);
     } else {
-      // Redirect to login page if not logged in
       if (location.pathname !== '/login') {
         window.location.href = '/login';
       }

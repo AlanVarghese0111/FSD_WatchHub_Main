@@ -16,8 +16,9 @@ import ViewAllUsers from './components/Admin/ViewAllUsers';
 import UpdateProduct from './components/Admin/UpdateProduct';
 import Layout from './components/Layout';
 import Viewwatch from './components/Viewwatch';
-import BuyNow from './components/BuyNow';
 import Userdata from './components/Userdata';
+import Orders from './components/Orders';
+import BuyNow from './components/BuyNow';
 
 const theme = createTheme({
   palette: {
@@ -49,8 +50,10 @@ function App() {
               <Route path="/viewusers" element={<ViewAllUsers />} />
               <Route path="/updateproduct/:productId" element={<UpdateProduct />} />
               <Route path="/viewwatch/:category" element={<Layout><Viewwatch /></Layout>} />
-              <Route path="/buynow/:productId" element={<Layout><BuyNow /></Layout>} />
+              <Route path="/BuyNow/:productId" element={<Layout><BuyNow /></Layout>} />
+              <Route path="/BuyNow" element={<Layout><BuyNow /></Layout>} />
               <Route path="/userdata" element={<Layout><Userdata/></Layout>} /> {/* Profile route */}
+              <Route path="orders" element={<Layout><Orders/></Layout>}/>
             </Routes>
           </Container>
         </CartProvider>

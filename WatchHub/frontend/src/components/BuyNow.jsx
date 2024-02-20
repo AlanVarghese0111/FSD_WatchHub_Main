@@ -1,36 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { Typography, Paper, Grid, Button, styled, CircularProgress } from '@mui/material';
-import Userdata from './Userdata';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Typography, Paper, Grid, Button, CircularProgress, TextField } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
-const StyledPaper = styled(Paper)({
-  padding: '20px',
-  marginBottom: '20px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-});
-
-const StyledImage = styled('img')({
-  maxWidth: '100%',
-  height: 'auto',
-  marginBottom: '20px',
-});
-
-const TitleContainer = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: '20px',
-});
-
-const TitleIcon = styled(ShoppingCartIcon)({
-  marginRight: '10px',
-});
 
 const BuyNow = () => {
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1); // Default quantity is 1
+  const [firstName, setFirstName] = useState('');
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductById = async () => {
@@ -45,10 +26,22 @@ const BuyNow = () => {
     fetchProductById();
   }, [productId]);
 
-  const handlePlaceOrder = () => {
-    // Add logic to process the order, e.g., integrating a payment gateway
-    console.log('Order placed:', product); // Console log for place order
-    alert('Your order has been placed successfully!');
+  const handlePlaceOrder = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/order/placeorder', {
+        productId,
+        quantity,
+        firstName,
+        address,
+        phoneNumber,
+      });
+      console.log('Order placed successfully!');
+      alert('Your order has been placed successfully!');
+      navigate('/');
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Failed to place order. Please try again later.');
+    }
   };
 
   if (!product) {
@@ -61,45 +54,57 @@ const BuyNow = () => {
 
   return (
     <div>
-      <TitleContainer>
-        <TitleIcon />
-        <Typography variant="h2" gutterBottom align="center">
-          Buy Now
-        </Typography>
-      </TitleContainer>
-      <Grid container justifyContent="center">
-        <Grid item xs={12} md={6}>
-          <StyledPaper elevation={3}>
-            <StyledImage src={product.image} alt={product.name} />
+      <Typography variant="h2" gutterBottom align="center">
+        Buy Now
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <Paper>
             <Typography variant="h5" component="h2" gutterBottom align="center">
               {product.name}
             </Typography>
+            <img src={product.image} alt={product.name} style={{ maxWidth: '100%', height: 'auto' }} />
             <Typography variant="body1" color="textSecondary" paragraph align="center">
               {product.description}
             </Typography>
             <Typography variant="body1" align="center">Price: ${product.price}</Typography>
-          </StyledPaper>
+          </Paper>
+        </Grid>
+        <Grid item xs={6}>
+          <Paper>
+            <TextField
+              label="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              variant="outlined"
+              fullWidth
+              style={{ marginTop: '20px' }}
+              required
+            />
+            <TextField
+              label="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              variant="outlined"
+              fullWidth
+              style={{ marginTop: '20px' }}
+              required
+            />
+            <TextField
+              label="Phone Number"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              variant="outlined"
+              fullWidth
+              style={{ marginTop: '20px' }}
+              required
+            />
+            <Button variant="contained" color="primary" fullWidth onClick={handlePlaceOrder}>
+              Place Order
+            </Button>
+          </Paper>
         </Grid>
       </Grid>
-      <Typography variant="h4" gutterBottom align="center">
-        Deliver To
-      </Typography>
-      <Grid container justifyContent="center">
-        <Grid item xs={12} md={6}>
-          <StyledPaper elevation={3}>
-            <Userdata />
-          </StyledPaper>
-        </Grid>
-      </Grid>
-      <Typography variant="h4" gutterBottom align="center">
-        Payment Options
-      </Typography>
-      <Typography variant="body1" paragraph align="center">
-        You can pay by Credit/Debit Card, PayPal, or Cash on Delivery.
-      </Typography>
-      <Button variant="contained" color="primary" fullWidth onClick={handlePlaceOrder}>
-        Place Order
-      </Button>
     </div>
   );
 };
