@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
 import {
   Typography,
@@ -20,9 +20,9 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const QuantitySelect = styled(Select)({
-  minWidth: '150px',
-  height: '30px',
-  borderRadius: '11px',
+  minWidth: '100px',
+  height: '40px',
+  borderRadius: '20px',
   border: '1px solid #555',
   padding: '8px',
   color: '#333',
@@ -30,10 +30,12 @@ const QuantitySelect = styled(Select)({
   '&:hover': {
     border: '1px solid #555',
     backgroundColor: '#555',
+    color: '#fff',
   },
   '&:focus': {
     border: '1px solid #777',
     backgroundColor: '#555',
+    color: '#fff',
   },
 });
 
@@ -45,7 +47,7 @@ const StyledButton = styled(Button)({
   backgroundColor: '#333',
   color: 'white',
   height: 36,
-  padding: '0 30px',
+  padding: '25px', 
   boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
   '&:hover': {
     backgroundColor: 'brown',
@@ -55,13 +57,22 @@ const StyledButton = styled(Button)({
 
 const StyledCard = styled(Card)(({ theme }) => ({
   maxWidth: 300,
-  margin: 'auto',
+  margin: 'auto', 
+  backgroundPosition: 'contain',
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
   transition: 'transform 0.3s ease-in-out',
   '&:hover': {
-    transform: 'scale(1.05)',
+    transform: 'scale(0.95)',
   },
 }));
+
+const StyledGridContainer = styled(Grid)({
+  padding: '20px',
+});
+
+const ProductInfoTypography = styled(Typography)({
+  marginBottom: '10px',
+});
 
 const Viewwatch = () => {
   const [products, setProducts] = useState([]);
@@ -69,16 +80,16 @@ const Viewwatch = () => {
   const { category } = useParams();
   const { addToCart } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductsByCategory = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/product/viewproductsbycategory/${category}`);
         setProducts(response.data);
-        // Initialize quantities state
         const initialQuantities = {};
         response.data.forEach((product) => {
-          initialQuantities[product._id] = 1; // Set default quantity to 1
+          initialQuantities[product._id] = 1;
         });
         setQuantities(initialQuantities);
       } catch (error) {
@@ -123,80 +134,76 @@ const Viewwatch = () => {
   const handleBuyNow = (productId) => {
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     if (isAuthenticated === 'true') {
-      window.location.href = `/buynow/${productId}`;
+      const quantity = quantities[productId];
+      navigate(`/buynow/${productId}/${quantity}`);
       console.log('Buy now clicked for product ID:', productId);
     } else {
       if (location.pathname !== '/login') {
-        window.location.href = '/login';
+        navigate('/login');
       }
     }
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h2" gutterBottom>
-        Products in {category} Category
-      </Typography>
-      <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid item key={product._id} xs={12} sm={6} md={4}>
-            <StyledCard>
-              <CardMedia
-                component="img"
-                height="250"
-                image={product.image}
-                alt={product.name}
-              />
-              <CardContent>
-                <Typography variant="h5" component="h2" gutterBottom>
-                  {product.name}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  Description: {product.description}
-                </Typography>
-                <Typography variant="body1">
-                  Price: {product.price}
-                </Typography>
-                <Typography variant="body1">
-                  Stock: {product.stock}
-                </Typography>
-                <FormControl style={{ marginTop: '10px' }}>
-                  <InputLabel id={`quantity-label-${product._id}`}>Quantity</InputLabel>
-                  <QuantitySelect
-                    labelId={`quantity-label-${product._id}`}
-                    id={`quantity-select-${product._id}`}
-                    value={quantities[product._id] || 1}
-                    onChange={(e) => handleQuantityChange(product._id, e.target.value)}
-                    variant="outlined"
-                    style={{ backgroundColor: '#f0f0f0' }}
-                  >
-                    {[...Array(product.stock).keys()].map((index) => (
-                      <QuantityMenuItem key={index + 1} value={index + 1}>{index + 1}</QuantityMenuItem>
-                    ))}
-                  </QuantitySelect>
-                </FormControl>
-              </CardContent>
-              <CardActions style={{ justifyContent: 'space-between', padding: '16px' }}>
-                <StyledButton
-                  size="small"
-                  onClick={() => handleAddToCart(product)}
-                  startIcon={<AddShoppingCartIcon />}
+    <StyledGridContainer container spacing={3}>
+      {products.map((product) => (
+        <Grid item key={product._id} xs={4} >
+          <StyledCard>
+            <CardMedia
+              component="img"
+              height="250"
+              image={product.image}
+              alt={product.name}
+            />
+            <CardContent>
+              <Typography variant="h5" component="h2" gutterBottom>
+                {product.name}
+              </Typography>
+              <ProductInfoTypography variant="body2" color="textSecondary" gutterBottom>
+                Description: {product.description}
+              </ProductInfoTypography>
+              <ProductInfoTypography variant="body1">
+                Price: {product.price}
+              </ProductInfoTypography>
+              <ProductInfoTypography variant="body1">
+                Stock: {product.stock}
+              </ProductInfoTypography>
+              <FormControl style={{ marginTop: '15px' }}>
+                <InputLabel id={`quantity-label-${product._id}`}>Quantity</InputLabel>
+                <QuantitySelect
+                  labelId={`quantity-label-${product._id}`}
+                  id={`quantity-select-${product._id}`}
+                  value={quantities[product._id] || 1}
+                  onChange={(e) => handleQuantityChange(product._id, e.target.value)}
+                  variant="outlined"
+                  style={{ backgroundColor: '#f0f0f0', marginTop: '15px' }}
                 >
-                  Add to Cart
-                </StyledButton>
-                <StyledButton
-                  size="small"
-                  onClick={() => handleBuyNow(product._id)}
-                  startIcon={<ShoppingCartIcon />}
-                >
-                  Buy Now
-                </StyledButton>
-              </CardActions>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
-    </div>
+                  {[...Array(product.stock).keys()].map((index) => (
+                    <QuantityMenuItem key={index + 1} value={index + 1}>{index + 1}</QuantityMenuItem>
+                  ))}
+                </QuantitySelect>
+              </FormControl>
+            </CardContent>
+            <CardActions style={{ justifyContent: 'space-between', padding: '16px' }}>
+              <StyledButton
+                size="small"
+                onClick={() => handleAddToCart(product)}
+                startIcon={<AddShoppingCartIcon />}
+              >
+                Add to Cart
+              </StyledButton>
+              <StyledButton
+                size="small"
+                onClick={() => handleBuyNow(product._id)}
+                startIcon={<ShoppingCartIcon />}
+              >
+                Buy Now
+              </StyledButton>
+            </CardActions>
+          </StyledCard>
+        </Grid>
+      ))}
+    </StyledGridContainer>
   );
 };
 

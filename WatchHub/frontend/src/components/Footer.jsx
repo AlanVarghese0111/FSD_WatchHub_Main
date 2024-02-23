@@ -9,25 +9,31 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import BusinessIcon from '@mui/icons-material/Business';
 
 const Container = styled.div`
+  width: 100%;
+  max-width: 1400px; /* Increased max-width */
+  margin: 0 auto; /* Center the footer horizontally */
   display: flex;
-  background-color: #333;
+  background: linear-gradient(45deg, #333, #000080);
   color: #f9f9f9;
-  margin-top: 80px; /* Added margin for space */
+  padding: 40px;
 `;
 
 const Left = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px 40px; /* Adjusted padding */
+  padding-right: 40px; /* Adjusted padding */
 `;
 
 const Logo = styled.h1`
   margin-bottom: 20px;
+  font-size: 24px;
 `;
 
 const Desc = styled.p`
   margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.5;
 `;
 
 const SocialContainer = styled.div`
@@ -36,8 +42,8 @@ const SocialContainer = styled.div`
 `;
 
 const SocialIcon = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 50px; /* Increased icon size */
+  height: 50px; /* Increased icon size */
   border-radius: 50%;
   color: white;
   background-color: ${props => props.color};
@@ -49,13 +55,14 @@ const SocialIcon = styled.div`
 
 const Right = styled.div`
   flex: 1;
-  padding: 20px 40px; /* Adjusted padding */
+  padding-left: 40px; /* Adjusted padding */
 `;
 
 const ContactItem = styled.div`
   margin-bottom: 20px;
   display: flex;
   align-items: center;
+  font-size: 16px;
 `;
 
 const Payment = styled.img`

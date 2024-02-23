@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Typography, Paper, Grid, Button, CircularProgress, TextField } from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const BuyNow = () => {
-  const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1); // Default quantity is 1
+  const [product
+    , setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   const [firstName, setFirstName] = useState('');
   const [address, setAddress] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { productId } = useParams();
+  const { productId, quantity: urlQuantity } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,24 +18,49 @@ const BuyNow = () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/product/vieweachproduct/${productId}`);
         setProduct(response.data);
+        setQuantity(Number(urlQuantity)); // Set the quantity from URL parameter
+
+        // Retrieve user details from local storage and set the state
+        const storedFirstName = localStorage.getItem('firstName') || '';
+        const storedAddress = localStorage.getItem('address') || '';
+        const storedPhoneNumber = localStorage.getItem('phoneNumber') || '';
+
+        setFirstName(storedFirstName);
+        setAddress(storedAddress);
+        setPhoneNumber(storedPhoneNumber);
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
     };
 
     fetchProductById();
-  }, [productId]);
+  }, [productId, urlQuantity]);
+
+  const calculateTotalPrice = () => {
+    if (product) {
+      return product.price * quantity;
+    }
+    return 0;
+  };
 
   const handlePlaceOrder = async () => {
     try {
-      await axios.post('http://localhost:5000/api/order/placeorder', {
+      const userEmail = localStorage.getItem('userEmail');
+
+      // Make the POST request to place the order
+      const response = await axios.post('http://localhost:5000/api/order/placeorder', {
         productId,
         quantity,
         firstName,
         address,
         phoneNumber,
+        userEmail, // Include userEmail in the request payload
       });
+
+      // If the request is successful, log the order details
       console.log('Order placed successfully!');
+      console.log('Order details:', response.data); // Assuming the server responds with the created order
+
       alert('Your order has been placed successfully!');
       navigate('/');
     } catch (error) {
@@ -63,7 +88,7 @@ const BuyNow = () => {
             <Typography variant="h5" component="h2" gutterBottom align="center">
               {product.name}
             </Typography>
-            <img src={product.image} alt={product.name} style={{ maxWidth: '100%', height: 'auto' }} />
+            <img src={product.image} alt={product.name} style={{ maxWidth: '100%', height: '200px' }} /> {/* Set fixed height */}
             <Typography variant="body1" color="textSecondary" paragraph align="center">
               {product.description}
             </Typography>
@@ -99,6 +124,7 @@ const BuyNow = () => {
               style={{ marginTop: '20px' }}
               required
             />
+            <Typography variant="body1" align="center">Total Price: ${calculateTotalPrice()}</Typography>
             <Button variant="contained" color="primary" fullWidth onClick={handlePlaceOrder}>
               Place Order
             </Button>

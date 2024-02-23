@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -7,14 +7,11 @@ import {
   Button,
   IconButton,
   Badge,
-  Paper,
-  InputBase,
   Menu,
   MenuItem,
 } from '@mui/material';
 import WatchHubIcon from './assets/WatchHubIcon.jpeg';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import SearchIcon from '@mui/icons-material/Search';
 import LoginIcon from '@mui/icons-material/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useCart } from './CartContext';
@@ -22,10 +19,9 @@ import { useCart } from './CartContext';
 const NavBar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState(''); // State for search query
   const [anchorEl, setAnchorEl] = useState(null);
   const { cartItems } = useCart();
-  const navigate = useNavigate(); // Use useNavigate for navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
@@ -37,7 +33,7 @@ const NavBar = () => {
   }, [cartItems]);
 
   const handleLogout = () => {
-    console.log('User logged out'); // Console log for logout
+    console.log('User logged out');
     if (window.confirm('Are you sure you want to logout?')) {
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('user');
@@ -46,6 +42,11 @@ const NavBar = () => {
       sessionStorage.clear();
       localStorage.clear();
     }
+  };
+
+  const handleorderClick = () => {
+    navigate('/Orders');
+    setAnchorEl(null);
   };
 
   const handleProfileMenuOpen = (event) => {
@@ -57,28 +58,14 @@ const NavBar = () => {
   };
 
   const handleProfileClick = () => {
-    // Redirect to /userdata page
     navigate('/userdata');
-    // Close the profile menu
     setAnchorEl(null);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim() !== '') {
-      // Redirect to search results page with search query as parameter
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
   return (
-    <AppBar style={{ backgroundColor: '#333', zIndex: 1000, position: 'fixed' }}>
+    <AppBar style={{ background: 'linear-gradient(45deg, #333, #000080)', zIndex: 1000, position: 'fixed' }}>
       <Toolbar>
-        <IconButton component={Link} to="/" edge="start" color="inherit" aria-label="menu">
+        <IconButton component={Link} to="/" edge="start" color="inherit" aria-label="menu"  >
           <img src={WatchHubIcon} alt="Watch Hub Icon" style={{ borderRadius: '5px', width: '32px', height: '32px' }} />
         </IconButton>
         <Typography
@@ -88,36 +75,17 @@ const NavBar = () => {
           style={{
             flex: 1,
             textDecoration: 'none',
-            color: '#fff',
+            color: '#fff', 
             fontWeight: 'bold',
+            fontFamily: "'Satisfy', cursive",
+            fontWeight: 400,
           }}
         >
           WatchHub
         </Typography>
 
-        {/* <Paper component="form" onSubmit={handleSearchSubmit} sx={{ p: '2', display: 'flex', width: '60%', alignItems: 'center' }}>
-          <InputBase
-            placeholder="Search"
-            inputProps={{ 'aria-label': 'search products' }}
-            value={searchQuery}
-            onChange={handleSearchChange}
-            sx={{ ml: 1, flex: 1, color: '#000' }}
-          />
-          <IconButton type="submit" aria-label="search" sx={{ color: '#000' }}>
-            <SearchIcon />
-          </IconButton>
-        </Paper> */}
-
         <div style={{ display: 'flex' }}>
-          <Button component={Link} to="/" color="inherit" style={{ margin: '0 10px' }}>
-            Home
-          </Button>
-          <Button component={Link} to="/orders" color="inherit" style={{ margin: '0 10px' }}>
-            Orders
-          </Button>
-          <Button component={Link} to="/about" color="inherit" style={{ margin: '0 10px' }}>
-            About
-          </Button>
+           
           {isAuthenticated && (
             <>
               <IconButton onClick={handleProfileMenuOpen} color="inherit" style={{ margin: '0 10px' }}>
@@ -132,6 +100,7 @@ const NavBar = () => {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
               >
                 <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+                <MenuItem onClick={handleorderClick}>Orders</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
               <IconButton component={Link} to="/cart" color="inherit" style={{ margin: '0 10px' }}>

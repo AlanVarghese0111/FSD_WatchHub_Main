@@ -87,6 +87,34 @@ router.delete('/deleteusers/:userId', async (req, res) => {
   }
 });
 
+// Define route to update user data by userId
+router.put('/updateuser/:userId', async (req, res) => {
+  try {
+    // Extract userId from request parameters
+    const { userId } = req.params;
+
+    // Find user by userId
+    let user = await User.findById(userId);
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update user data with the new values
+    user.set(req.body); // Assuming req.body contains the updated user data
+    user = await user.save();
+
+    // Respond with the updated user object
+    res.status(200).json(user);
+  } catch (error) {
+    // Handle errors
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 // GET user details by ID
 router.get('/fetchuser/:userId', async (req, res) => {
   try {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, CircularProgress, Grid, Paper, styled } from '@mui/material';
+import { Typography, CircularProgress, Grid, Paper, styled, TextField, Button } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 const StyledPaper = styled(Paper)({
   padding: '20px',
@@ -9,6 +10,7 @@ const StyledPaper = styled(Paper)({
 
 const Userdata = () => {
   const [userData, setUserData] = useState(null);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     // Fetch user data based on the stored user ID
@@ -32,12 +34,50 @@ const Userdata = () => {
     fetchUserData();
   }, []);
 
+  const handleEditClick = () => {
+    setEditMode(true);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // Implement logic to send updated user data to backend
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/updateuser/${userData._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setUserData(data);
+        setEditMode(false);
+      } else {
+        console.error('Error updating user data:', data.error);
+        // Handle error updating user data
+      }
+    } catch (error) {
+      console.error('Error updating user data:', error);
+      // Handle error updating user data
+    }
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUserData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   return (
     <StyledPaper elevation={3}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h4" align="center" gutterBottom>
-            User Details
+            <span style={{ marginRight: '10px' }}>User Details</span>
+            {!editMode && <EditIcon onClick={handleEditClick} style={{ cursor: 'pointer' }} />}
           </Typography>
         </Grid>
         {userData ? (
@@ -78,6 +118,63 @@ const Userdata = () => {
               </Typography>
             </Grid>
             {/* Add more user details here */}
+            {editMode && (
+              <Grid item xs={12}>
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    fullWidth
+                    label="First Name"
+                    name="firstName"
+                    value={userData.firstName}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Last Name"
+                    name="lastName"
+                    value={userData.lastName}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    value={userData.email}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Address"
+                    name="address"
+                    value={userData.address}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Pincode"
+                    name="pincode"
+                    value={userData.pincode}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Land Mark"
+                    name="landmark"
+                    value={userData.landmark}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Phone Number"
+                    name="phoneNumber"
+                    value={userData.phoneNumber}
+                    onChange={handleChange}
+                  />
+                  {/* Add more fields as needed */}
+                  <Button type="submit" variant="contained" color="primary">Save</Button>
+                </form>
+              </Grid>
+            )}
           </>
         ) : (
           <Grid item xs={12} style={{ textAlign: 'center' }}>

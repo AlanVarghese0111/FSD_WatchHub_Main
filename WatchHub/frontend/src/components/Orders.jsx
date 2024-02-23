@@ -29,21 +29,22 @@ const useStyles = {
 const Orders = () => {
   const [orders, setOrders] = useState([]);
 
-  const fetchOrders = async () => {
+  const fetchUserOrders = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/order/orders');
+      const userId = localStorage.getItem('userId');
+      const response = await fetch(`http://localhost:5000/api/order/userorders/${userId}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        throw new Error('Failed to fetch user orders');
       }
       const data = await response.json();
       setOrders(data);
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error('Error fetching user orders:', error);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchUserOrders();
   }, []);
 
   return (

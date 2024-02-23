@@ -1,4 +1,5 @@
 // routes/cartRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const CartItem = require('../models/CartItem');
@@ -6,7 +7,7 @@ const CartItem = require('../models/CartItem');
 // POST route to add item to cart
 router.post('/addcart', async (req, res) => {
   try {
-    const { itemName, price, quantity,id, firstName, lastName, address } = req.body;
+    const { itemName, price, quantity, id, firstName, lastName, address, userId } = req.body;
     const cartItem = new CartItem({
       itemName,
       price,
@@ -15,6 +16,7 @@ router.post('/addcart', async (req, res) => {
       firstName,
       lastName,
       address,
+      userId,
     });
     await cartItem.save();
     res.status(201).json({ message: 'Item added to cart successfully' });
@@ -23,7 +25,6 @@ router.post('/addcart', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 // DELETE route to remove item from cart
 router.delete('/removecart/:itemId', async (req, res) => {
@@ -40,25 +41,17 @@ router.delete('/removecart/:itemId', async (req, res) => {
   }
 });
 
-// Endpoint to fetch cart items for the specified user ID
-router.get('/cart/:userId', async (req, res) => {
+// GET route to fetch cart items by user ID
+router.get('/usercartitems/:userId', async (req, res) => {
   try {
-    const userId = req.params.userId;
-    // Retrieve the user from the database based on the provided user ID
-    const user = await User.findById(userId).populate('cart');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    // Return the cart items associated with the user
-    res.json(user.cart);
+    const { userId } = req.params;
+    const userCartItems = await CartItem.find({ userId });
+    res.status(200).json(userCartItems);
   } catch (error) {
-    console.error('Error fetching cart items:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error fetching user cart items:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
-
 
 // Endpoint to fetch all cart items
 router.get('/cartitems', async (req, res) => {
@@ -70,6 +63,5 @@ router.get('/cartitems', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 module.exports = router;

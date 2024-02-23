@@ -26,7 +26,7 @@ const theme = createTheme({
       main: '#2196f3',
     },
     secondary: {
-      main: '#f50057',
+      main: '#000',
     },
   },
 });
@@ -37,7 +37,7 @@ function App() {
       <Router>
         <CssBaseline />
         <CartProvider> {/* Wrap Routes with CartProvider */}
-          <Container style={{ marginTop: '80px', padding: '0px' }}>
+          <Container style={{width: '100%', marginTop: '80px', padding: '0px' }}>
             <Routes>
               <Route path="/" element={<Layout><Home /></Layout>} />
               <Route path="/cart" element={<Layout><Cart /></Layout>} />
@@ -50,8 +50,7 @@ function App() {
               <Route path="/viewusers" element={<ViewAllUsers />} />
               <Route path="/updateproduct/:productId" element={<UpdateProduct />} />
               <Route path="/viewwatch/:category" element={<Layout><Viewwatch /></Layout>} />
-              <Route path="/BuyNow/:productId" element={<Layout><BuyNow /></Layout>} />
-              <Route path="/BuyNow" element={<Layout><BuyNow /></Layout>} />
+              <Route path="/buynow/:productId/:quantity" element={<Layout><BuyNow /></Layout>} />
               <Route path="/userdata" element={<Layout><Userdata/></Layout>} /> {/* Profile route */}
               <Route path="orders" element={<Layout><Orders/></Layout>}/>
             </Routes>
