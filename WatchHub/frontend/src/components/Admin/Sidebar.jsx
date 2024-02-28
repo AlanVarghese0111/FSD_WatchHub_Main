@@ -57,7 +57,7 @@ const Sidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Admin Dashboard" />
           </ListItem>
-          <ListItem button component={Link} to="/Ordersmanagement">
+          <ListItem button component={Link} to="/vieworders">
             <ListItemIcon>
               <ShoppingBasketIcon />
             </ListItemIcon>

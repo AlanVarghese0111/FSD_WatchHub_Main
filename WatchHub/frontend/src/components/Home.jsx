@@ -5,6 +5,10 @@ import img1 from './assets/Rolex.jpg';
 import img2 from './assets/casio.jpeg';
 import img3 from './assets/fossil.jpg';
 import img4 from './assets/tag_heuer.jpg';
+import img5 from './assets/Breitling.jpg'
+import img6 from './assets/Vacheron_Constantin.jpg'
+import img7 from './assets/Patek_Philippe.jpg'
+import img8 from './assets/Hublot .jpg'
 import classic_watch from './assets/classic_watch.jpg';
 import Sports_watch from './assets/sports_watch.jpg';
 import Smart_watch from './assets/smart_watch.jpg';
@@ -27,10 +31,10 @@ const Home = () => {
     { id: 2, name: 'Casio', image: img2, alt: 'Casio' },
     { id: 3, name: 'Fossil', image: img3, alt: 'Fossil' },
     { id: 4, name: 'Tag Heuer', image: img4, alt: 'Tag Heuer' },
-    { id: 5, name: 'Tag Heuer', image: img3, alt: 'Tag Heuer' },
-    { id: 6, name: 'Tag Heuer', image: img4, alt: 'Tag Heuer' },
-    { id: 7, name: 'Tag Heuer', image: img2, alt: 'Tag Heuer' },
-    { id: 8, name: 'Tag Heuer', image: img1, alt: 'Tag Heuer' }, 
+    { id: 5, name: 'Breitling', image: img5, alt: 'Breitling' },
+    { id: 6, name: 'Vacheron Constantin', image: img6, alt: 'Vacheron Constantin' },
+    { id: 7, name: 'Patek Philippe', image: img7, alt: 'Patek Philippe' },
+    { id: 8, name: 'Hublot', image: img8, alt: 'Hublot' }, 
   ];
 
   const watches = [

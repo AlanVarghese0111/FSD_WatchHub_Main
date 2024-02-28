@@ -3,27 +3,35 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
-
 // POST - Place a new order
-router.post('/placeorder', async (req, res) => { // Include leading / in route path
-  const { productId, userId,firstName, address, phoneNumber, quantity } = req.body;
+router.post('/placeorder', async (req, res) => { 
+  const { productId, userId, image,firstName, lastName, address, pincode, landmark, phoneNumber, quantity,status } = req.body;
 
   try {
-    const userEmail = req.body.userEmail || localStorage.getItem('userEmail'); // Retrieve userEmail from request body or local storage
+    console.log('Received order request:', req.body); // Log the entire request body
+
+    // const userEmail = req.body.userEmail || localStorage.getItem('userEmail'); // Retrieve userEmail from request body or local storage
 
     const order = new Order({
       productId,
       userId,
+      image,
       firstName,
+      lastName,
       address,
+      pincode,
+      landmark,
       phoneNumber,
-      quantity,
-      userEmail, 
+      quantity, 
+      status
     });
 
     const newOrder = await order.save();
+    
+    console.log('Order placed successfully:', newOrder); // Log the created order details
     res.status(201).json(newOrder);
   } catch (err) {
+    console.error('Error placing order:', err);
     res.status(400).json({ message: err.message });
   }
 });
@@ -56,6 +64,38 @@ router.get('/userorders/:userId', async (req, res) => {
     res.status(200).json(userOrders);
   } catch (error) {
     console.error('Error fetching user orders:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// GET - Find total number of orders available
+router.get('/totalorders', async (req, res) => {
+  try {
+    const totalOrdersCount = await Order.countDocuments();
+    res.status(200).json({ totalOrders: totalOrdersCount });
+  } catch (error) {
+    console.error('Error fetching total orders count:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// DELETE - Cancel an order by ID
+router.delete('/cancelorder/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    // Check if the order exists
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Delete the order
+    await Order.findByIdAndDelete(orderId);
+
+    res.status(200).json({ message: 'Order canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling order:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });

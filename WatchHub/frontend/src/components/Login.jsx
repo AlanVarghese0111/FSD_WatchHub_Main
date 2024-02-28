@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import LockIcon from '@mui/icons-material/Lock';
@@ -71,64 +71,91 @@ const Login = () => {
     password: '',
   });
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  // State variables for pincode, landmark, and phoneNumber
+  const [pincode, setPincode] = useState('');
+  const [landmark, setLandmark] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const[UserId,setUserId]=useState('');
+  useEffect(() => {
+    // Fetch pincode, landmark, and phoneNumber from localStorage
+    const storedPincode = localStorage.getItem('pincode') || '';
+    const storedLandmark = localStorage.getItem('landmark') || '';
+    const storedPhoneNumber = localStorage.getItem('phoneNumber') || '';
+    const storedUserId=localStorage.getItem('userId');
 
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    // Set the state variables
+    setPincode(storedPincode);
+    setLandmark(storedLandmark);
+    setPhoneNumber(storedPhoneNumber);
+    setUserId(storedUserId);
+  }, []);
 
-      const data = await response.json();
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-      if (response.ok) {
-        // Set user authentication status and user data in localStorage
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('user', JSON.stringify(data.user));
+  try {
+    const response = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-        // Extract user ID and store it in localStorage
-        // const userId = data.user._id;
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('userId', data.user._id);
-        localStorage.setItem('firstName', data.user.firstName);
-localStorage.setItem('lastName', data.user.lastName);
-localStorage.setItem('address', data.user.address);
+    const data = await response.json();
 
+    if (response.ok) {
+      // Set user authentication status and user data in localStorage
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('user', JSON.stringify(data.user));
 
+      // Extract user ID and store it in localStorage
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('userId', data.user._id);
+      localStorage.setItem('firstName', data.user.firstName);
+      localStorage.setItem('lastName', data.user.lastName);
+      localStorage.setItem('address', data.user.address);
+      localStorage.setItem('pincode', data.user.pincode);
+      localStorage.setItem('landmark', data.user.landmark);
+      localStorage.setItem('phoneNumber', data.user.phoneNumber);
+      console.log(data.user.firstName);
+      console.log(data.user.pincode);
+      console.log(data.user._id);
+      // Set the state variables
+      setPincode(data.user.pincode);
+      setLandmark(data.user.landmark);
+      setPhoneNumber(data.user.phoneNumber);
+      setUserId(data.user._id);
 
-
-        // Check if the user is an admin
-        if (data.user.email === 'admin@gmail.com') {
-          console.log('Admin logged in');
-        } else {
-          console.log('User logged in');
-        }
-
-        // Redirect the user
-        if (data.user.email === 'admin@gmail.com') {
-          navigate('/admin');
-        } else {
-          navigate('/');
-          window.location.reload();
-        }
-
-        // Show login success message
-        alert('Login Successful : Welcome To WatchHub');
+      // Check if the user is an admin
+      if (data.user.email === 'admin@gmail.com') {
+        console.log('Admin logged in');
       } else {
-        console.error('Error during login:', data.error);
-        // Show login error message
-        alert('Check email and password and try again: ' + data.error);
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      // Show login error message
-      alert('Error during login: ' + error.message);
-    }
-  };
+        console.log('User logged in');
+        }
+// Redirect the user
+if (data.user.email === 'admin@gmail.com') {
+  navigate('/admin');
+} else {
+  navigate('/');
+  window.location.reload();
+}
+
+// Show login success message
+alert('Login Successful : Welcome To WatchHub');
+} else {
+console.error('Error during login:', data.error);
+// Show login error message
+alert('Check email and password and try again: ' + data.error);
+}
+} catch (error) {
+console.error('Error during login:', error);
+// Show login error message
+alert('Error during login: ' + error.message);
+    }
+  };
+
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -148,6 +175,7 @@ localStorage.setItem('address', data.user.address);
         <Input type="password" id="password" name="password" onChange={handleChange} required />
 
         <StyledButton type="submit">Login</StyledButton>
+
 
         <Message>
           Don't have an account? <Link to="/signup" style={{ textDecoration: 'none' }}>Signup</Link>

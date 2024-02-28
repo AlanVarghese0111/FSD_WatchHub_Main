@@ -78,7 +78,6 @@ const NavBar = () => {
             color: '#fff', 
             fontWeight: 'bold',
             fontFamily: "'Satisfy', cursive",
-            fontWeight: 400,
           }}
         >
           WatchHub

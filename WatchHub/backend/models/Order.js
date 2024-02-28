@@ -11,11 +11,27 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  image:{
+    type:String,
+    required:true,
+  },
   firstName: {
     type: String,
     required: true,
   },
+  lastName: {
+    type: String,
+    required: true,
+  },
   address: {
+    type: String,
+    required: true,
+  },
+  pincode: {
+    type: String,
+    required: true,
+  },
+  landmark: {
     type: String,
     required: true,
   },
@@ -27,6 +43,9 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  status:{
+    type:String
+  }
 });
 
 const Order = mongoose.model('Order', orderSchema);
