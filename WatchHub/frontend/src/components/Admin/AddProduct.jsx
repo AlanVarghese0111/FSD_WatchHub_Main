@@ -9,8 +9,8 @@ const AddProduct = () => {
     category: '', // Updated to use category as a state
     description: '',
     price: '',
-    image: '',
-    stock: '',
+    image: ''
+    // stock: '',
   });
   const [alert, setAlert] = useState({ message: '', severity: '' });
 
@@ -39,8 +39,8 @@ const AddProduct = () => {
         category: '',
         description: '',
         price: '',
-        image: '',
-        stock: '',
+        image: ''
+        // stock: '',
       });
     } catch (error) {
       console.error('Error adding product:', error);
@@ -150,18 +150,6 @@ const AddProduct = () => {
                     name="image"
                     value={productData.image}
                     onChange={handleChange}
-                    required
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Stock"
-                    variant="outlined"
-                    name="stock"
-                    value={productData.stock}
-                    onChange={handleChange}
-                    type="number"
                     required
                   />
                 </Grid>

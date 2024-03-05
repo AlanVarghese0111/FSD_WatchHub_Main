@@ -81,7 +81,7 @@ const ViewAllUsers = () => {
 
   const handleEditUser = (userId) => {
     // Navigate to the edit page with the user ID as a parameter
-    navigate(`/edituser/${userId}`);
+    navigate(`/editadmin/${userId}`);
   };
 
   return (

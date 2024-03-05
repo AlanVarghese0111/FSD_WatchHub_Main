@@ -21,12 +21,12 @@ const productSchema = new mongoose.Schema({
   image:{
     type:String,
     required:true,
-  },
-  stock: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
+  }
+  // ,stock: {
+  //   type: Number,
+  //   required: true,
+  //   min: 0,
+  // },
 });
 
 const Product = mongoose.model('Product', productSchema);

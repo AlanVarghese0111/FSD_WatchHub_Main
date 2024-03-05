@@ -12,8 +12,8 @@ const UpdateProduct = () => {
     category: '',
     description: '',
     price: '',
-    image: '',
-    stock: '',
+    image: ''
+    // stock: '',
   });
   const [updateStatus, setUpdateStatus] = useState({ open: false, message: '', severity: '' });
 
@@ -98,7 +98,7 @@ const UpdateProduct = () => {
                     value={productData.name}
                     onChange={handleChange}
                     required
-                    disabled 
+                    // disabled 
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -149,18 +149,7 @@ const UpdateProduct = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Stock"
-                    variant="outlined"
-                    name="stock"
-                    value={productData.stock}
-                    onChange={handleChange}
-                    type="number"
-                    required
-                  />
-                </Grid>
+                
               </Grid>
               <Button
                 type="submit"

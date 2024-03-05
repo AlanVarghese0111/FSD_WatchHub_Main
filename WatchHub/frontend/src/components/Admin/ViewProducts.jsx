@@ -80,9 +80,9 @@ const ViewProducts = () => {
                       <Typography variant="body2" color="textSecondary" gutterBottom>
                         Price: ₹{product.price} 
                       </Typography>
-                      <Typography variant="body2" color="textSecondary" gutterBottom>
+                      {/* <Typography variant="body2" color="textSecondary" gutterBottom>
                         Stock: {product.stock}
-                      </Typography>
+                      </Typography> */}
                       {product.image && <img src={product.image} alt={product.name} style={{ maxWidth: '100%', height: 'auto' }} />}
                     </CardContent>
                     <CardActions sx={{ marginTop: 'auto' }}>

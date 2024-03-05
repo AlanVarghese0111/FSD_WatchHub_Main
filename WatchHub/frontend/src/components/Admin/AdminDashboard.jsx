@@ -84,7 +84,7 @@ const AdminDashboard = () => {
               </Avatar>
               <Typography variant="h6" gutterBottom>Total Orders</Typography>
               <Typography variant="h3">{totalOrders}</Typography>
-              <Button variant="contained" onClick={() => navigate('/vieworders')} style={{ backgroundColor: '#333', color: '#fff' }}>
+              <Button variant="contained" onClick={() => navigate('/ordersmanagement')} style={{ backgroundColor: '#333', color: '#fff' }}>
                 View All Orders
               </Button>
             </Paper>

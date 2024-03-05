@@ -44,6 +44,11 @@ const NavBar = () => {
     }
   };
 
+  const handleCartClick = () => {
+    const userId = localStorage.getItem('userId');
+    navigate(`/cart/${userId}`);
+  };
+
   const handleorderClick = () => {
     navigate('/Orders');
     setAnchorEl(null);
@@ -102,7 +107,7 @@ const NavBar = () => {
                 <MenuItem onClick={handleorderClick}>Orders</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
-              <IconButton component={Link} to="/cart" color="inherit" style={{ margin: '0 10px' }}>
+              <IconButton onClick={handleCartClick} color="inherit" style={{ margin: '0 10px' }}>
                 <Badge badgeContent={cartCount} color="error">
                   <ShoppingCartIcon />
                 </Badge>

@@ -144,19 +144,27 @@ router.get('/vieworders', async (req, res) => {
 });
 
 
-// // Fetch product details by ID
-// router.get('/vieweachproduct/:id', async (req, res) => {
-//   try {
-//     const productId = req.params.id;
-//     const product = await Product.findById(productId);
-//     if (!product) {
-//       return res.status(404).json({ error: 'Product not found' });
-//     }
-//     res.json(product);
-//   } catch (error) {
-//     console.error('Error fetching product details:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+// Define route for fetching a product by ID
+router.get('/vieweachproduct/:productId', async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    // Fetch the product from the database by its ID
+    const product = await Product.findById(productId);
+    
+    if (!product) {
+      // If product is not found, return a 404 Not Found response
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Respond with the product details
+    res.status(200).json(product);
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching product:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 module.exports = router;

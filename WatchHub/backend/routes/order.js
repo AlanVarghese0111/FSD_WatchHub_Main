@@ -100,5 +100,51 @@ router.delete('/cancelorder/:orderId', async (req, res) => {
   }
 });
 
+// PUT - Edit the status of an order by ID
+router.put('/editstatus/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    // Check if the order exists
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Update the status of the order
+    order.status = status;
+    await order.save();
+
+    res.status(200).json({ message: 'Order status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// GET - Fetch product status from order table based on product and user
+router.get('/productstatus/:productId/:userId', async (req, res) => {
+  try {
+    const { productId, userId } = req.params;
+
+    // Find order by product ID and user ID
+    const order = await Order.findOne({ productId, userId });
+
+    // Check if order exists
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found for this product and user' });
+    }
+
+    // Respond with the status of the product in the order
+    res.status(200).json({ status: order.status });
+  } catch (error) {
+    console.error('Error fetching product status:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 
 module.exports = router;
