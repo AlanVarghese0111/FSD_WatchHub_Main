@@ -87,6 +87,7 @@ const OrderManagement = () => {
                         style={{ marginBottom: '10px' }}
                       >
                         <MenuItem value="ordered">Ordered</MenuItem>
+                        <MenuItem value="dispatched">Dispatched</MenuItem>
                         <MenuItem value="shipped">Shipped</MenuItem>
                         <MenuItem value="delivered">Delivered</MenuItem>
                       </Select>

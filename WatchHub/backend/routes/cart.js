@@ -3,9 +3,10 @@ const router = express.Router();
 const CartItem = require('../models/Cart');
 
 // POST route to add a new item to the cart
-router.post('/add-to-cart', async (req, res) => {
+router.post('/add-to-cart/:userId', async (req, res) => {
     try {
-        const { userId, name, price, image, quantity } = req.body;
+        const userId = req.params.userId;
+        const { name, price, image, quantity } = req.body;
 
         // Create a new cart item
         const newItem = new CartItem({
@@ -24,6 +25,7 @@ router.post('/add-to-cart', async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 });
+
 
 // GET route to fetch cart items by user ID
 router.get('/cartitems/:userId', async (req, res) => {
@@ -44,6 +46,17 @@ router.delete('/remove/:itemId', async (req, res) => {
         // Find and delete the cart item with the given ID
         await CartItem.findByIdAndDelete(itemId);
         res.json({ message: 'Cart item deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+// GET route to fetch cart items by user ID
+router.get('/cartitems/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        // Find all cart items associated with the given user ID
+        const cartItems = await CartItem.find({ userId: userId });
+        res.json(cartItems);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

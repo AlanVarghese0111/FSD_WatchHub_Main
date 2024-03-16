@@ -55,13 +55,13 @@ import CartBuynow from './components/CartBuynow';
                   <Route path="/viewusers" element={<ViewAllUsers />} />
                   <Route path="/updateproduct/:productId" element={<UpdateProduct />} />
                   <Route path="/viewwatch/:category" element={<Layout><Viewwatch /></Layout>} />
-                  <Route path="/buynow/:productId/:quantity" element={<Layout><BuyNow /></Layout>} />
-                  <Route path="/cartbuynow/:productId/:quantity" element={<Layout><CartBuynow /></Layout>} />
+                  <Route path="/buynow/:productId/:quantity" element={<BuyNow />} />
+        <Route path="/cartbuynow" element={<CartBuynow />} />
                   <Route path="/userdata" element={<Layout><Userdata /></Layout>} />
                   <Route path="/orders" element={<Layout><Orders /></Layout>} />
-                  <Route path="/vieworders" element={<ViewAllOrders />} />
+                  {/* <Route path="/vieworders" element={<ViewAllOrders />} /> */}
                   <Route path="/ordersmanagement" element={<OrderManagement />} />
-                  <Route path="/productdetails/:productId" element={<ProductDetails />} />
+                  <Route path="/productdetails/:productId" element={<Layout><ProductDetails /></Layout>} />
                   <Route path="/editadmin/:userId" element={<EditAdmin />} />
                   
                 </Routes>

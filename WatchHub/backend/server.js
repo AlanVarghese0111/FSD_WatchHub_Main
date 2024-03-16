@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-const app = express(); // Move this line up
+const app = express();
 
 const PORT = process.env.PORT || 5000;
 
@@ -32,12 +32,16 @@ const productRoute = require('./routes/product');
 app.use('/api/product', productRoute);
 
 // Route for cart
-const cartRoute=require('./routes/cart');
-app.use('/api/cartItem',cartRoute);
+const cartRoute = require('./routes/cart');
+app.use('/api/cartItem', cartRoute);
 
 // Route for orders
 const orderRouter = require('./routes/order');
 app.use('/api/order', orderRouter);
+
+// Route for feedback
+const feedbackRoute = require('./routes/feedback'); // Corrected path
+app.use('/api/feedback', feedbackRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

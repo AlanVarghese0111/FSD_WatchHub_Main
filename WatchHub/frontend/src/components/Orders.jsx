@@ -197,16 +197,17 @@ const Orders = () => {
                       </Button>
                     </>
                   )}
-                  {confirmOrderId !== order._id && (
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      style={useStyles.button}
-                      onClick={() => handleCancelOrder(order._id)}
-                    >
-                      Cancel Order
-                    </Button>
-                  )}
+                 {confirmOrderId !== order._id && order.status !== 'shipped' && order.status !== 'delivered' && (
+  <Button
+    variant="contained"
+    color="secondary"
+    style={useStyles.button}
+    onClick={() => handleCancelOrder(order._id)}
+  >
+    Cancel Order
+  </Button>
+)}
+
                 </CardContent>
               </StyledCard>
             </Grid>

@@ -71,8 +71,10 @@ const Cart = () => {
   const handleProceedToCheckout = () => {
     // Extracting product IDs from cartItems
     const productIds = cartItems.map((item) => item._id);
+    // Convert array of IDs into a comma-separated string
+    const productIdsString = productIds.join(",");
     // Navigating to the checkout page with product IDs in the URL
-    navigate(`/cartbuynow`);
+    navigate(`/cartbuynow/${productIdsString}`);
   };
 
   const handleRemoveItem = async (itemId) => {
