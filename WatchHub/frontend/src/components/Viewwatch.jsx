@@ -77,7 +77,7 @@ const Viewwatch = () => {
                 const quantity = quantities[product._id] || 1;
 
                 // Send a POST request to add the item to the cart
-                const response = await fetch('http://localhost:5000/api/cartItem/add-to-cart', {
+                const response = await fetch(`http://localhost:5000/api/cartItem/add-to-cart/${userId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

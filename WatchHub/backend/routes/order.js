@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 // POST - Place a new order
 router.post('/placeorder', async (req, res) => { 
   const { productId, userId, image,firstName, lastName, address, pincode, landmark, phoneNumber, quantity,status } = req.body;
@@ -35,6 +36,49 @@ router.post('/placeorder', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+// POST - Place orders for all items in the cart
+router.post('/placeordercart', async (req, res) => {
+  const orders = req.body.orders; // Array of orders from the cart
+
+  try {
+    console.log('Received order requests:', orders); // Log the received order requests
+
+    const placedOrders = []; // Array to store successfully placed orders
+
+    // Iterate over each order in the array
+    for (const orderData of orders) {
+      const { productId, userId, image, firstName, lastName, address, pincode, landmark, phoneNumber, quantity } = orderData;
+
+      const order = new Order({
+        productId,
+        userId,
+        image,
+        firstName,
+        lastName,
+        address,
+        pincode,
+        landmark,
+        phoneNumber,
+        quantity,
+        status: 'Placed', // Assuming status is set to 'Placed' for new orders
+      });
+
+      // Save the order to the database
+      const newOrder = await order.save();
+
+      placedOrders.push(newOrder); // Push the successfully placed order to the array
+    }
+
+    console.log('Orders placed successfully:', placedOrders); // Log the successfully placed orders
+    res.status(201).json(placedOrders); // Respond with the array of placed orders
+  } catch (err) {
+    console.error('Error placing orders:', err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
 
 // GET - Fetch all orders
 router.get('/orders', async (req, res) => {

@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   pincode: {
-    type: String,
+    type: Number,
     required: true,
   },
   landmark: {
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   phoneNumber: {
-    type: String,
+    type: Number,
     required: true,
   },
 });

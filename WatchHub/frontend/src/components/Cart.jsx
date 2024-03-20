@@ -74,7 +74,7 @@ const Cart = () => {
     // Convert array of IDs into a comma-separated string
     const productIdsString = productIds.join(",");
     // Navigating to the checkout page with product IDs in the URL
-    navigate(`/cartbuynow/${productIdsString}`);
+    navigate(`/cartbuynow`);
   };
 
   const handleRemoveItem = async (itemId) => {
