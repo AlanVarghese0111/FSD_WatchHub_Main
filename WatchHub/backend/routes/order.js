@@ -123,8 +123,8 @@ router.get('/totalorders', async (req, res) => {
   }
 });
 
-// DELETE - Cancel an order by ID
-router.delete('/cancelorder/:orderId', async (req, res) => {
+// PATCH - Update the status of an order by ID
+router.patch('/cancelorder/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
 
@@ -134,8 +134,9 @@ router.delete('/cancelorder/:orderId', async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Delete the order
-    await Order.findByIdAndDelete(orderId);
+    // Update the status of the order to 'cancelled'
+    order.status = 'cancelled';
+    await order.save();
 
     res.status(200).json({ message: 'Order canceled successfully' });
   } catch (error) {
@@ -143,6 +144,7 @@ router.delete('/cancelorder/:orderId', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 // PUT - Edit the status of an order by ID
 router.put('/editstatus/:orderId', async (req, res) => {

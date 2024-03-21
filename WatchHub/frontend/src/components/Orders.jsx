@@ -17,6 +17,7 @@ const StyledCard = styled(Card)({
   "&:hover": {
     transform: "scale(1.03)",
   },
+  height: "100%", // Fix height of StyledCard
 });
 
 const useStyles = {
@@ -31,12 +32,12 @@ const useStyles = {
   button: {
     marginTop: (theme) => theme.spacing(2),
     marginRight: (theme) => theme.spacing(2),
-    color: "#ffffff", // Text color of buttons
-    borderRadius: "20px", // Rounded corners
-    padding: "10px 20px", // Increased padding
-    fontWeight: "bold", // Bold text
-    fontSize: "16px", // Increased font size
-    transition: "background-color 0.3s", // Smooth transition on hover
+    color: "#ffffff",
+    borderRadius: "20px",
+    padding: "10px 20px",
+    fontWeight: "bold",
+    fontSize: "16px",
+    transition: "background-color 0.3s",
   },
   loader: {
     display: "flex",
@@ -51,8 +52,8 @@ const useStyles = {
     marginTop: (theme) => theme.spacing(1),
     padding: (theme) => theme.spacing(1),
     borderRadius: "4px",
-    fontSize: "14px", // Increased font size
-    marginBottom: "10px", // Added margin bottom
+    fontSize: "14px",
+    marginBottom: "10px",
   },
   confirmedStatus: {
     backgroundColor: "#4caf50",
@@ -61,6 +62,10 @@ const useStyles = {
   cancelledStatus: {
     backgroundColor: "#f44336",
     color: "#ffffff",
+  },
+  productImage: {
+    maxWidth: "100%",
+    height: "auto",
   },
 };
 
@@ -90,7 +95,14 @@ const Orders = () => {
         })
       );
 
-      setOrders(ordersWithProducts);
+      // Sort orders by priority (confirmed first, cancelled last)
+      const sortedOrders = ordersWithProducts.sort((a, b) => {
+        if (a.status === "cancelled" && b.status !== "cancelled") return 1;
+        if (a.status !== "cancelled" && b.status === "cancelled") return -1;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+
+      setOrders(sortedOrders);
     } catch (error) {
       console.error("Error fetching user orders:", error);
     } finally {
@@ -107,7 +119,11 @@ const Orders = () => {
       const response = await fetch(
         `http://localhost:5000/api/order/cancelorder/${orderId}`,
         {
-          method: "DELETE",
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "cancelled" }),
         }
       );
       if (!response.ok) {
@@ -119,7 +135,6 @@ const Orders = () => {
         )
       );
       alert("Order canceled successfully");
-      window.location.reload();
     } catch (error) {
       console.error("Error canceling order:", error);
     } finally {
@@ -130,6 +145,10 @@ const Orders = () => {
   useEffect(() => {
     fetchUserOrders();
   }, []);
+
+  const shortenString = (str, maxLen) => {
+    return str.length > maxLen ? str.substring(0, maxLen) + "..." : str;
+  };
 
   return (
     <div style={useStyles.root}>
@@ -146,17 +165,16 @@ const Orders = () => {
             <Grid item xs={12} sm={6} md={4} key={order._id}>
               <StyledCard>
                 <CardContent>
-                  <Typography variant="h5">Order ID: {order._id}</Typography>
                   <img
                     src={order.product.image}
                     alt={`Order ${order._id}`}
-                    style={{ maxWidth: "100%", height: "auto" }}
+                    style={useStyles.productImage}
                   />
                   <Typography variant="body1">
-                    Product Name: {order.product.name}
+                    Product Name: {shortenString(order.product.name, 20)}
                   </Typography>
                   <Typography variant="body1">
-                    Description: {order.product.description}
+                    Description: {shortenString(order.product.description, 50)}
                   </Typography>
                   <Typography variant="body1">
                     Price: {order.product.price}
@@ -197,17 +215,19 @@ const Orders = () => {
                       </Button>
                     </>
                   )}
-                 {confirmOrderId !== order._id && order.status !== 'shipped' && order.status !== 'delivered' && (
-  <Button
-    variant="contained"
-    color="secondary"
-    style={useStyles.button}
-    onClick={() => handleCancelOrder(order._id)}
-  >
-    Cancel Order
-  </Button>
-)}
-
+                  {confirmOrderId !== order._id &&
+                    order.status !== "shipped" &&
+                    order.status !== "delivered" &&
+                    order.status !== "cancelled" && (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        style={useStyles.button}
+                        onClick={() => handleCancelOrder(order._id)}
+                      >
+                        Cancel Order
+                      </Button>
+                    )}
                 </CardContent>
               </StyledCard>
             </Grid>

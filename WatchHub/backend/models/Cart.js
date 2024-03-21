@@ -6,6 +6,11 @@ const cartSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -15,16 +20,16 @@ const cartSchema = new mongoose.Schema({
         required: true,
         min: 0,
     },
-    image:{
-        type:String,
-        required:true,
+    image: {
+        type: String,
+        required: true,
     },
-    quantity:{
-        type :Number ,
-        default :1
+    quantity: {
+        type: Number,
+        default: 1,
     }
 });
 
-const CartItem = mongoose.model('CartItem', cartSchema); // Change model name to CartItem
+const CartItem = mongoose.model('CartItem', cartSchema);
 
 module.exports = CartItem;

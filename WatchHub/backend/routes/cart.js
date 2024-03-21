@@ -6,26 +6,35 @@ const CartItem = require('../models/Cart');
 router.post('/add-to-cart/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-        const { name, price, image, quantity } = req.body;
+        const { name, price, image, quantity, productId } = req.body;
 
-        // Create a new cart item
-        const newItem = new CartItem({
-            userId: userId,
-            name: name,
-            price: price,
-            image: image,
-            quantity: quantity
-        });
+        // Check if the item already exists in the cart
+        const existingItem = await CartItem.findOne({ userId: userId, productId: productId });
 
-        // Save the new item to the database
-        const savedItem = await newItem.save();
+        if (existingItem) {
+            // If the item exists, update its quantity
+            existingItem.quantity += quantity;
+            await existingItem.save();
+            res.status(200).json(existingItem);
+        } else {
+            // If the item doesn't exist, create a new cart item
+            const newItem = new CartItem({
+                userId: userId,
+                productId: productId,
+                name: name,
+                price: price,
+                image: image,
+                quantity: quantity
+            });
 
-        res.status(201).json(savedItem);
+            // Save the new item to the database
+            const savedItem = await newItem.save();
+            res.status(201).json(savedItem);
+        }
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
-
 
 // GET route to fetch cart items by user ID
 router.get('/cartitems/:userId', async (req, res) => {
